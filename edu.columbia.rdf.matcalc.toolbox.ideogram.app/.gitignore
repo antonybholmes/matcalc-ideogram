@@ -1,0 +1,5 @@
+/bin/
+/target/
+/recent.files.json
+/user.settings.json
+/dependency-reduced-pom.xml

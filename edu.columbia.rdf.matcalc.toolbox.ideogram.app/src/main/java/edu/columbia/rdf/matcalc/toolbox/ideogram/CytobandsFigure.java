@@ -47,7 +47,7 @@ import org.jebtk.graphplot.figure.LabelAxesLayer;
 import org.jebtk.graphplot.figure.SubFigure;
 import org.jebtk.graphplot.figure.series.XYSeries;
 import org.jebtk.graphplot.plotbox.PlotBoxGridLayout;
-import org.jebtk.math.matrix.AnnotationMatrix;
+import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.DoubleMatrix;
 
 /**
@@ -87,9 +87,9 @@ public class CytobandsFigure extends Figure {
 	public CytobandsFigure(final Cytobands cytobands,
 			final ChromosomeSizes chrSizes,
 			final Color gainColor,
-			final Map<Chromosome, AnnotationMatrix> matrixMapGain,
+			final Map<Chromosome, DataFrame> matrixMapGain,
 			final Color lossColor,
-			final Map<Chromosome, AnnotationMatrix> matrixMapLoss) {
+			final Map<Chromosome, DataFrame> matrixMapLoss) {
 		super("Cytobands Figure", new PlotBoxGridLayout(36, 2));
 
 		// lets see which genome is longest
@@ -160,9 +160,9 @@ public class CytobandsFigure extends Figure {
 			final Chromosome chr,
 			int maxLength,
 			final Color gainColor,
-			final Map<Chromosome, AnnotationMatrix> matrixMap) {
+			final Map<Chromosome, DataFrame> matrixMap) {
 
-		AnnotationMatrix m = matrixMap.get(chr);
+		DataFrame m = matrixMap.get(chr);
 		
 		axes = createPlot("Gains",
 				cytobands,
@@ -187,9 +187,9 @@ public class CytobandsFigure extends Figure {
 			final Chromosome chr,
 			int maxLength,
 			final Color lossColor,
-			final Map<Chromosome, AnnotationMatrix> matrixMap) {
+			final Map<Chromosome, DataFrame> matrixMap) {
 
-		AnnotationMatrix m = matrixMap.get(chr);
+		DataFrame m = matrixMap.get(chr);
 		
 		axes = createPlot("Losses",
 				cytobands,
@@ -215,7 +215,7 @@ public class CytobandsFigure extends Figure {
 			ChromosomeSizes chrSizes,
 			Chromosome chr,
 			int maxLength,
-			Map<Chromosome, AnnotationMatrix> matrixMap,
+			Map<Chromosome, DataFrame> matrixMap,
 			Color color,
 			FigureVertAlignment alignment) {
 
@@ -232,7 +232,7 @@ public class CytobandsFigure extends Figure {
 		Axes axes = subFigure.newAxes();
 
 		if (matrixMap.containsKey(chr)) {
-			AnnotationMatrix m = matrixMap.get(chr);
+			DataFrame m = matrixMap.get(chr);
 
 			XYSeries series = new XYSeries(name);
 
@@ -269,7 +269,7 @@ public class CytobandsFigure extends Figure {
 	 * @param m
 	 * @return
 	 */
-	private static int getUniqueY(final AnnotationMatrix m) {
+	private static int getUniqueY(final DataFrame m) {
 		Set<Double> set = new HashSet<Double>();
 		
 		for (int i = 0; i < m.getRowCount(); ++i) {

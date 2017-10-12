@@ -43,8 +43,8 @@ import org.jebtk.core.Resources;
 import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.settings.SettingsService;
 import org.jebtk.graphplot.figure.Figure;
-import org.jebtk.math.matrix.AnnotatableMatrix;
-import org.jebtk.math.matrix.AnnotationMatrix;
+import org.jebtk.math.matrix.DataFrame;
+import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.modern.UIService;
 import org.jebtk.modern.dialog.ModernDialogStatus;
 import org.jebtk.modern.event.ModernClickEvent;
@@ -129,7 +129,7 @@ public class IdeogramModule extends CalcModule implements ModernClickListener  {
 	}
 
 	private void ideogram() throws IOException {
-		AnnotationMatrix m = mWindow.getCurrentMatrix();
+		DataFrame m = mWindow.getCurrentMatrix();
 
 		if (m == null) {
 			showLoadMatrixError(mWindow);
@@ -215,14 +215,14 @@ public class IdeogramModule extends CalcModule implements ModernClickListener  {
 
 		// create some ms
 
-		Map<Chromosome, AnnotationMatrix> matrixMapGain = 
-				new HashMap<Chromosome, AnnotationMatrix>();
+		Map<Chromosome, DataFrame> matrixMapGain = 
+				new HashMap<Chromosome, DataFrame>();
 
 		for (Chromosome chr : Human.CHROMOSOMES) {
 			if (rowCountGain.containsKey(chr)) {
 				// The matrix must hold all gains.
-				AnnotationMatrix matrix = 
-						AnnotatableMatrix.createNumericalMatrix(rowCountGain.get(chr), 4);
+				DataFrame matrix = 
+						DataFrame.createNumericalMatrix(rowCountGain.get(chr), 4);
 
 				matrix.setColumnName(0, "Gains x1");
 				matrix.setColumnName(1, "Gains y1");
@@ -233,13 +233,13 @@ public class IdeogramModule extends CalcModule implements ModernClickListener  {
 			}
 		}
 
-		Map<Chromosome, AnnotationMatrix> matrixMapLoss = 
-				new HashMap<Chromosome, AnnotationMatrix>();
+		Map<Chromosome, DataFrame> matrixMapLoss = 
+				new HashMap<Chromosome, DataFrame>();
 
 		for (Chromosome chr : Human.CHROMOSOMES) {
 			if (rowCountLoss.containsKey(chr)) {
-				AnnotationMatrix matrix = 
-						AnnotatableMatrix.createNumericalMatrix(rowCountLoss.get(chr), 4);
+				DataFrame matrix = 
+						DataFrame.createNumericalMatrix(rowCountLoss.get(chr), 4);
 
 				matrix.setColumnName(0, "Losses x1");
 				matrix.setColumnName(1, "Losses y1");

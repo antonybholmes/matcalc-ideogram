@@ -34,12 +34,11 @@ import java.util.Set;
 
 import org.jebtk.bioinformatics.ext.ucsc.Cytobands;
 import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.Chromosome.Human;
 import org.jebtk.bioinformatics.genomic.ChromosomeSizes;
+import org.jebtk.bioinformatics.genomic.Human;
 import org.jebtk.bioinformatics.ui.external.ucsc.CytobandsLayer;
 import org.jebtk.core.settings.SettingsService;
 import org.jebtk.graphplot.PlotFactory;
-import org.jebtk.graphplot.figure.Axes;
 import org.jebtk.graphplot.figure.Axes;
 import org.jebtk.graphplot.figure.Figure;
 import org.jebtk.graphplot.figure.FigureVertAlignment;
@@ -272,7 +271,7 @@ public class CytobandsFigure extends Figure {
 	private static int getUniqueY(final DataFrame m) {
 		Set<Double> set = new HashSet<Double>();
 		
-		for (int i = 0; i < m.getRowCount(); ++i) {
+		for (int i = 0; i < m.getRows(); ++i) {
 			set.add(m.getValue(i, 1));
 		}
 		

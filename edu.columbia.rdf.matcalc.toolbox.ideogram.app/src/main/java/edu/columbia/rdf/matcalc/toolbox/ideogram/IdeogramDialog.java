@@ -54,120 +54,119 @@ import org.jebtk.modern.window.WindowWidgetFocusEvents;
  * @author Antony Holmes Holmes
  */
 public class IdeogramDialog extends ModernDialogHelpWindow implements ModernClickListener {
-	
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	private Map<String, ModernRadioButton> mGenomeMap =
-			new TreeMap<String, ModernRadioButton>();
 
-	private ColorSwatchButton mGainsButton;
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
 
-	private ColorSwatchButton mLossesButton;
+  private Map<String, ModernRadioButton> mGenomeMap = new TreeMap<String, ModernRadioButton>();
 
+  private ColorSwatchButton mGainsButton;
 
-	/**
-	 * Instantiates a new row annotation dialog.
-	 *
-	 * @param parent the parent
-	 * @param rowAnnotations the row annotations
-	 */
-	public IdeogramDialog(ModernWindow parent, 
-			Color gainColor, 
-			Color lossColor) {
-		super(parent, "ideogram.help.url");
-		
-		setTitle("Ideogram");
+  private ColorSwatchButton mLossesButton;
 
-		createUi(gainColor, lossColor);
-		
-		setup();
-	}
+  /**
+   * Instantiates a new row annotation dialog.
+   *
+   * @param parent
+   *          the parent
+   * @param rowAnnotations
+   *          the row annotations
+   */
+  public IdeogramDialog(ModernWindow parent, Color gainColor, Color lossColor) {
+    super(parent, "ideogram.help.url");
 
-	/**
-	 * Setup.
-	 */
-	private void setup() {
-		mGenomeMap.get(mGenomeMap.keySet().iterator().next()).setSelected(true);
-			
-		setSize(480, 360);
-		
-		addWindowFocusListener(new WindowWidgetFocusEvents(mOkButton));
-		
-		UI.centerWindowToScreen(this);
-	}
+    setTitle("Ideogram");
 
-	/**
-	 * Creates the ui.
-	 */
-	private final void createUi(Color gainColor, Color lossColor) {
-		//this.getContentPane().add(new JLabel("Change " + getProductDetails().getProductName() + " settings", JLabel.LEFT), BorderLayout.PAGE_START);
-		
-		Box box = VBox.create();
-		
-		sectionHeader("Reference Genome", box);
-		
-		ModernButtonGroup group = new ModernButtonGroup();
+    createUi(gainColor, lossColor);
 
-		
-		// create a list of the genomes
-		
-		File[] files = IdeogramModule.RES_DIR.listFiles();
-		
-		List<String> genomes = new ArrayList<String>();
+    setup();
+  }
 
-		for (File file : files) {
-			if (!file.isDirectory()) {
-				continue;
-			}
-			
-			genomes.add(file.getName());
-		}
-		
-		Collections.sort(genomes);
-		
-		for (String genome : genomes) {
-			
-			ModernRadioButton button = new ModernRadioButton(genome);
-			
-			box.add(button);
-			box.add(UI.createVGap(5));
-			
-			mGenomeMap.put(genome, button);
-			
-			group.add(button);
-		}
-		
-		midSectionHeader("Colors", box);
-		
-		mGainsButton = new ColorSwatchButton(getParentWindow(), gainColor);
-		box.add(new HExpandBox("Gains", mGainsButton));
+  /**
+   * Setup.
+   */
+  private void setup() {
+    mGenomeMap.get(mGenomeMap.keySet().iterator().next()).setSelected(true);
 
-		box.add(UI.createVGap(5));
-		
-		mLossesButton = new ColorSwatchButton(getParentWindow(), lossColor);
-		box.add(new HExpandBox("Losses", mLossesButton));
+    setSize(480, 360);
 
-		setDialogCardContent(box);
-	}
+    addWindowFocusListener(new WindowWidgetFocusEvents(mOkButton));
 
-	public final String getGenome() {
-		for (String genome : mGenomeMap.keySet()) {
-			if (mGenomeMap.get(genome).isSelected()) {
-				return genome;
-			}
-		}
-		
-		return null;
-	}
+    UI.centerWindowToScreen(this);
+  }
 
-	public Color getGainColor() {
-		return mGainsButton.getSelectedColor();
-	}
-	
-	public Color getLossColor() {
-		return mLossesButton.getSelectedColor();
-	}
+  /**
+   * Creates the ui.
+   */
+  private final void createUi(Color gainColor, Color lossColor) {
+    // this.getContentPane().add(new JLabel("Change " +
+    // getProductDetails().getProductName() + " settings", JLabel.LEFT),
+    // BorderLayout.PAGE_START);
+
+    Box box = VBox.create();
+
+    sectionHeader("Reference Genome", box);
+
+    ModernButtonGroup group = new ModernButtonGroup();
+
+    // create a list of the genomes
+
+    File[] files = IdeogramModule.RES_DIR.listFiles();
+
+    List<String> genomes = new ArrayList<String>();
+
+    for (File file : files) {
+      if (!file.isDirectory()) {
+        continue;
+      }
+
+      genomes.add(file.getName());
+    }
+
+    Collections.sort(genomes);
+
+    for (String genome : genomes) {
+
+      ModernRadioButton button = new ModernRadioButton(genome);
+
+      box.add(button);
+      box.add(UI.createVGap(5));
+
+      mGenomeMap.put(genome, button);
+
+      group.add(button);
+    }
+
+    midSectionHeader("Colors", box);
+
+    mGainsButton = new ColorSwatchButton(getParentWindow(), gainColor);
+    box.add(new HExpandBox("Gains", mGainsButton));
+
+    box.add(UI.createVGap(5));
+
+    mLossesButton = new ColorSwatchButton(getParentWindow(), lossColor);
+    box.add(new HExpandBox("Losses", mLossesButton));
+
+    setDialogCardContent(box);
+  }
+
+  public final String getGenome() {
+    for (String genome : mGenomeMap.keySet()) {
+      if (mGenomeMap.get(genome).isSelected()) {
+        return genome;
+      }
+    }
+
+    return null;
+  }
+
+  public Color getGainColor() {
+    return mGainsButton.getSelectedColor();
+  }
+
+  public Color getLossColor() {
+    return mLossesButton.getSelectedColor();
+  }
 }

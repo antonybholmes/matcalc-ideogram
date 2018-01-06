@@ -57,257 +57,199 @@ import org.jebtk.math.matrix.DoubleMatrix;
  */
 public class CytobandsFigure extends Figure {
 
-	/**
-	 * The constant serialVersionUID.
-	 */
-	private static final long serialVersionUID = 1L;
+  /**
+   * The constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
 
-	private static final double PLOT_WIDTH = 
-			SettingsService.getInstance().getAsInt("ideogram.plot-width");
+  private static final double PLOT_WIDTH = SettingsService.getInstance().getAsInt("ideogram.plot-width");
 
-	private static final int PLOT_ROW_HEIGHT = 
-			SettingsService.getInstance().getAsInt("ideogram.separation");
+  private static final int PLOT_ROW_HEIGHT = SettingsService.getInstance().getAsInt("ideogram.separation");
 
-	private Axes axes;
+  private Axes axes;
 
-	//private static final Color GAINS_COLOR =
-	//		SettingsService.getInstance().getAsColor("ideogram.gains.color");
-	
-	//private static final Color LOSSES_COLOR =
-	//		SettingsService.getInstance().getAsColor("ideogram.losses.color");
+  // private static final Color GAINS_COLOR =
+  // SettingsService.getInstance().getAsColor("ideogram.gains.color");
 
-	private static final int OFFSET = 10;
+  // private static final Color LOSSES_COLOR =
+  // SettingsService.getInstance().getAsColor("ideogram.losses.color");
 
-	/**
-	 * Sets the view.
-	 *
-	 * @param view the new view
-	 */
-	public CytobandsFigure(final Cytobands cytobands,
-			final ChromosomeSizes chrSizes,
-			final Color gainColor,
-			final Map<Chromosome, DataFrame> matrixMapGain,
-			final Color lossColor,
-			final Map<Chromosome, DataFrame> matrixMapLoss) {
-		super("Cytobands Figure", new PlotBoxGridLayout(36, 2));
+  private static final int OFFSET = 10;
 
-		// lets see which genome is longest
+  /**
+   * Sets the view.
+   *
+   * @param view
+   *          the new view
+   */
+  public CytobandsFigure(final Cytobands cytobands, final ChromosomeSizes chrSizes, final Color gainColor,
+      final Map<Chromosome, DataFrame> matrixMapGain, final Color lossColor,
+      final Map<Chromosome, DataFrame> matrixMapLoss) {
+    super("Cytobands Figure", new PlotBoxGridLayout(36, 2));
 
-		int maxLength = chrSizes.getSize(Human.CHR1);
-		//Chromosome longestChr = Chromosome.CHR1;
+    // lets see which genome is longest
 
-		Chromosome chr;
+    int maxLength = chrSizes.getSize(Human.CHR1);
+    // Chromosome longestChr = Chromosome.CHR1;
 
-		for (int i = 0; i < 12; ++i) {
-			// Gains
-			chr = Human.CHROMOSOMES[i];
+    Chromosome chr;
 
-			createGainPlot(cytobands, 
-					chrSizes, 
-					chr, 
-					maxLength,
-					gainColor,
-					matrixMapGain);
+    for (int i = 0; i < 12; ++i) {
+      // Gains
+      chr = Human.CHROMOSOMES[i];
 
-			chr = Human.CHROMOSOMES[i + 12];
+      createGainPlot(cytobands, chrSizes, chr, maxLength, gainColor, matrixMapGain);
 
-			createGainPlot(cytobands, 
-					chrSizes, 
-					chr, 
-					maxLength,
-					gainColor,
-					matrixMapGain);
+      chr = Human.CHROMOSOMES[i + 12];
 
-			//
-			// Cytobands
-			//
+      createGainPlot(cytobands, chrSizes, chr, maxLength, gainColor, matrixMapGain);
 
-			chr = Human.CHROMOSOMES[i];
+      //
+      // Cytobands
+      //
 
-			createBands(cytobands, chrSizes, chr, maxLength);
+      chr = Human.CHROMOSOMES[i];
 
-			chr = Human.CHROMOSOMES[i + 12];
+      createBands(cytobands, chrSizes, chr, maxLength);
 
-			createBands(cytobands, chrSizes, chr, maxLength);
+      chr = Human.CHROMOSOMES[i + 12];
 
-			//
-			// Losses
-			//
+      createBands(cytobands, chrSizes, chr, maxLength);
 
-			chr = Human.CHROMOSOMES[i];
+      //
+      // Losses
+      //
 
-			createLossPlot(cytobands, 
-					chrSizes, 
-					chr, 
-					maxLength,
-					lossColor,
-					matrixMapLoss);
+      chr = Human.CHROMOSOMES[i];
 
-			chr = Human.CHROMOSOMES[i + 12];
+      createLossPlot(cytobands, chrSizes, chr, maxLength, lossColor, matrixMapLoss);
 
-			createLossPlot(cytobands, 
-					chrSizes, 
-					chr, 
-					maxLength,
-					lossColor,
-					matrixMapLoss);
-		}
-	}
+      chr = Human.CHROMOSOMES[i + 12];
 
-	private void createGainPlot(final Cytobands cytobands,
-			final ChromosomeSizes chrSizes,
-			final Chromosome chr,
-			int maxLength,
-			final Color gainColor,
-			final Map<Chromosome, DataFrame> matrixMap) {
+      createLossPlot(cytobands, chrSizes, chr, maxLength, lossColor, matrixMapLoss);
+    }
+  }
 
-		DataFrame m = matrixMap.get(chr);
-		
-		axes = createPlot("Gains",
-				cytobands,
-				chrSizes,
-				chr,
-				maxLength,
-				matrixMap,
-				gainColor,
-				FigureVertAlignment.BOTTOM);
-		
-		if (matrixMap.containsKey(chr)) {
-			axes.getY1Axis().setLimits(0, DoubleMatrix.maxInColumn(m, 1) + 1);
-		}
-		
-		//axes.getTitle().setText(chr.toString());
-		//axes.getMargins().setTop(0);
-		//axes.getMargins().setBottom(OFFSET);
-	}
+  private void createGainPlot(final Cytobands cytobands, final ChromosomeSizes chrSizes, final Chromosome chr,
+      int maxLength, final Color gainColor, final Map<Chromosome, DataFrame> matrixMap) {
 
-	private void createLossPlot(final Cytobands cytobands,
-			final ChromosomeSizes chrSizes,
-			final Chromosome chr,
-			int maxLength,
-			final Color lossColor,
-			final Map<Chromosome, DataFrame> matrixMap) {
+    DataFrame m = matrixMap.get(chr);
 
-		DataFrame m = matrixMap.get(chr);
-		
-		axes = createPlot("Losses",
-				cytobands,
-				chrSizes,
-				chr,
-				maxLength,
-				matrixMap,
-				lossColor,
-				FigureVertAlignment.TOP);
-		
-		//Axes.enableAllFeatures(axes);
-		
-		if (matrixMap.containsKey(chr)) {
-			axes.getY1Axis().setLimits(DoubleMatrix.minInColumn(m, 1) - 1, 0);
-		}
-		
-		//axes.getMargins().setTop(OFFSET);
-		axes.setBottomMargin(OFFSET);
-	}
+    axes = createPlot("Gains", cytobands, chrSizes, chr, maxLength, matrixMap, gainColor, FigureVertAlignment.BOTTOM);
 
-	private Axes createPlot(String name,
-			Cytobands cytobands,
-			ChromosomeSizes chrSizes,
-			Chromosome chr,
-			int maxLength,
-			Map<Chromosome, DataFrame> matrixMap,
-			Color color,
-			FigureVertAlignment alignment) {
+    if (matrixMap.containsKey(chr)) {
+      axes.getY1Axis().setLimits(0, DoubleMatrix.maxInColumn(m, 1) + 1);
+    }
 
-		int size = chrSizes.getSize(chr);
+    // axes.getTitle().setText(chr.toString());
+    // axes.getMargins().setTop(0);
+    // axes.getMargins().setBottom(OFFSET);
+  }
 
-		//
-		// Gains
-		//
+  private void createLossPlot(final Cytobands cytobands, final ChromosomeSizes chrSizes, final Chromosome chr,
+      int maxLength, final Color lossColor, final Map<Chromosome, DataFrame> matrixMap) {
 
-		SubFigure subFigure = newSubFigure(); //SubFigureService.getInstance().createNewFigure();
+    DataFrame m = matrixMap.get(chr);
 
-		subFigure.setVertAlignment(alignment);
+    axes = createPlot("Losses", cytobands, chrSizes, chr, maxLength, matrixMap, lossColor, FigureVertAlignment.TOP);
 
-		Axes axes = subFigure.newAxes();
+    // Axes.enableAllFeatures(axes);
 
-		if (matrixMap.containsKey(chr)) {
-			DataFrame m = matrixMap.get(chr);
+    if (matrixMap.containsKey(chr)) {
+      axes.getY1Axis().setLimits(DoubleMatrix.minInColumn(m, 1) - 1, 0);
+    }
 
-			XYSeries series = new XYSeries(name);
+    // axes.getMargins().setTop(OFFSET);
+    axes.setBottomMargin(OFFSET);
+  }
 
-			series.getStyle().getFillStyle().setColor(color);
-			series.getStyle().getLineStyle().setColor(color);
-			series.getStyle().getLineStyle().setStroke(2);
+  private Axes createPlot(String name, Cytobands cytobands, ChromosomeSizes chrSizes, Chromosome chr, int maxLength,
+      Map<Chromosome, DataFrame> matrixMap, Color color, FigureVertAlignment alignment) {
 
-			PlotFactory.createSegmentsPlot(m, axes, series);
+    int size = chrSizes.getSize(chr);
 
-			axes.getX1Axis().setLimits(0, size);
-			
-			int h = getUniqueY(m);
-			
-			axes.setInternalSize((int)(PLOT_WIDTH * (double)size / maxLength), 
-					PLOT_ROW_HEIGHT * h);
-		} else {
-			axes.setInternalSize((int)(PLOT_WIDTH * (double)size / maxLength), PLOT_ROW_HEIGHT);
-		}
+    //
+    // Gains
+    //
 
-		Axes.disableAllFeatures(axes);
-		
+    SubFigure subFigure = newSubFigure(); // SubFigureService.getInstance().createNewFigure();
 
+    subFigure.setVertAlignment(alignment);
 
-		axes.setMargins(0, 100, 0, OFFSET);
-	
-		//getSubFigureZModel().setZ(figure);
+    Axes axes = subFigure.newAxes();
 
-		return axes;
-	}
-	
-	/**
-	 * See how many unique y's and therefore rows we need.
-	 * 
-	 * @param m
-	 * @return
-	 */
-	private static int getUniqueY(final DataFrame m) {
-		Set<Double> set = new HashSet<Double>();
-		
-		for (int i = 0; i < m.getRows(); ++i) {
-			set.add(m.getValue(i, 1));
-		}
-		
-		return set.size();
-	}
+    if (matrixMap.containsKey(chr)) {
+      DataFrame m = matrixMap.get(chr);
 
-	private void createBands(Cytobands cytobands,
-			ChromosomeSizes chrSizes,
-			Chromosome chr,
-			int maxLength) {
+      XYSeries series = new XYSeries(name);
 
-		int size = chrSizes.getSize(chr);
+      series.getStyle().getFillStyle().setColor(color);
+      series.getStyle().getLineStyle().setColor(color);
+      series.getStyle().getLineStyle().setStroke(2);
 
-		//
-		// Cytobands
-		//
+      PlotFactory.createSegmentsPlot(m, axes, series);
 
-		SubFigure figure = newSubFigure(); //SubFigureService.getInstance().createNewFigure();
+      axes.getX1Axis().setLimits(0, size);
 
-		Axes axes = figure.newAxes();
+      int h = getUniqueY(m);
 
-		CytobandsLayer layer = new CytobandsLayer(chr, cytobands);
+      axes.setInternalSize((int) (PLOT_WIDTH * (double) size / maxLength), PLOT_ROW_HEIGHT * h);
+    } else {
+      axes.setInternalSize((int) (PLOT_WIDTH * (double) size / maxLength), PLOT_ROW_HEIGHT);
+    }
 
-		axes.addChild(layer);
-		axes.getX1Axis().setLimits(0, size);
-		axes.getY1Axis().setLimits(0, 1);
-		axes.setMargins(0, 100, 0, OFFSET);
-		
-		axes.addChild(new LabelAxesLayer(chr.toString(), 0, 0, -60, -5));
+    Axes.disableAllFeatures(axes);
 
-		axes.setInternalSize((int)(PLOT_WIDTH * (double)size / maxLength), 24);
+    axes.setMargins(0, 100, 0, OFFSET);
 
-		Axes.disableAllFeatures(axes);
+    // getSubFigureZModel().setZ(figure);
 
-		//axes.getTitle().setText(chr.toString());
+    return axes;
+  }
 
-		//getSubFigureZModel().setZ(figure);
-	}
+  /**
+   * See how many unique y's and therefore rows we need.
+   * 
+   * @param m
+   * @return
+   */
+  private static int getUniqueY(final DataFrame m) {
+    Set<Double> set = new HashSet<Double>();
+
+    for (int i = 0; i < m.getRows(); ++i) {
+      set.add(m.getValue(i, 1));
+    }
+
+    return set.size();
+  }
+
+  private void createBands(Cytobands cytobands, ChromosomeSizes chrSizes, Chromosome chr, int maxLength) {
+
+    int size = chrSizes.getSize(chr);
+
+    //
+    // Cytobands
+    //
+
+    SubFigure figure = newSubFigure(); // SubFigureService.getInstance().createNewFigure();
+
+    Axes axes = figure.newAxes();
+
+    CytobandsLayer layer = new CytobandsLayer(chr, cytobands);
+
+    axes.addChild(layer);
+    axes.getX1Axis().setLimits(0, size);
+    axes.getY1Axis().setLimits(0, 1);
+    axes.setMargins(0, 100, 0, OFFSET);
+
+    axes.addChild(new LabelAxesLayer(chr.toString(), 0, 0, -60, -5));
+
+    axes.setInternalSize((int) (PLOT_WIDTH * (double) size / maxLength), 24);
+
+    Axes.disableAllFeatures(axes);
+
+    // axes.getTitle().setText(chr.toString());
+
+    // getSubFigureZModel().setZ(figure);
+  }
 }

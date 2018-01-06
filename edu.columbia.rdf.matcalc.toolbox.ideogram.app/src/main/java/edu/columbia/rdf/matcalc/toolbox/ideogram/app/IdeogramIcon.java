@@ -19,7 +19,7 @@ import org.jebtk.modern.ColorTheme;
 import org.jebtk.modern.graphics.icons.ModernApplicationIcon;
 
 public class IdeogramIcon extends ModernApplicationIcon {
-	public IdeogramIcon() {
-		super("I", "d", ColorTheme.GRAY);
-	}
+  public IdeogramIcon() {
+    super("I", "d", ColorTheme.GRAY);
+  }
 }

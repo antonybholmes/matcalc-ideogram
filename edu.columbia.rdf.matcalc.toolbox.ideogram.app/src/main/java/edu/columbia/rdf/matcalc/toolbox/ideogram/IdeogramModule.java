@@ -57,340 +57,322 @@ import edu.columbia.rdf.matcalc.figure.graph2d.Graph2dWindow;
 import edu.columbia.rdf.matcalc.toolbox.CalcModule;
 import edu.columbia.rdf.matcalc.toolbox.ideogram.app.IdeogramIcon;
 
-
 /**
- * Merges designated segments together using the merge column. Consecutive rows with the same
- * merge id will be merged together. Coordinates and copy number will be adjusted but
- * genes, cytobands etc are not.
+ * Merges designated segments together using the merge column. Consecutive rows
+ * with the same merge id will be merged together. Coordinates and copy number
+ * will be adjusted but genes, cytobands etc are not.
  *
  * @author Antony Holmes Holmes
  *
  */
-public class IdeogramModule extends CalcModule implements ModernClickListener  {
-	
-	public static final File RES_DIR = new File("res/modules/ideogram/genomes");
-
-	private static final String NAME = "Ideogram";
-	
-	/**
-	 * The member button from human.
-	 */
-	private RibbonLargeButton mButtonIdeogram = new RibbonLargeButton("Ideogram", 
-			UIService.getInstance().loadIcon(IdeogramIcon.class, 24));
-
-	/**
-	 * The member window.
-	 */
-	private MainMatCalcWindow mWindow;
-
-	private Graph2dWindow mGraphWindow;
-
-	/* (non-Javadoc)
-	 * @see org.abh.lib.NameProperty#getName()
-	 */
-	@Override
-	public String getName() {
-		return NAME;
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.apps.matcalc.modules.Module#run(java.lang.String[])
-	 */
-	@Override
-	public void run(String... args) {
-		// Do nothing
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.columbia.rdf.apps.matcalc.modules.Module#init(edu.columbia.rdf.apps.matcalc.MainMatCalcWindow)
-	 */
-	@Override
-	public void init(MainMatCalcWindow window) {
-		mWindow = window;
-
-		// home
-		mButtonIdeogram.setToolTip(new ModernToolTip(NAME, 
-				"Generate ideogram for losses and gains."), mWindow.getRibbon().getToolTipModel());
-		mWindow.getRibbon().getHomeToolbar().getSection("Tools").add(mButtonIdeogram);
-		
-		mButtonIdeogram.addClickListener(this);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.abh.lib.ui.modern.event.ModernClickListener#clicked(org.abh.lib.ui.modern.event.ModernClickEvent)
-	 */
-	@Override
-	public final void clicked(ModernClickEvent e) {
-		try {
-			ideogram();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	}
-
-	private void ideogram() throws IOException {
-		DataFrame m = mWindow.getCurrentMatrix();
-
-		if (m == null) {
-			showLoadMatrixError(mWindow);
-
-			return;
-		}
-		
-		Map<String, Integer> idColumns = 
-				findColumns(mWindow, m, "id", "chr", "start", "end", "mean");
-		
-		if (idColumns == null) {
-			return;
-		}
-		
-		IdeogramDialog dialog = new IdeogramDialog(mWindow, 
-				SettingsService.getInstance().getAsColor("ideogram.gains.color"), 
-				SettingsService.getInstance().getAsColor("ideogram.losses.color"));
-
-		dialog.setVisible(true);
-
-		if (dialog.getStatus() == ModernDialogStatus.CANCEL) {
-			return;
-		}
-		
-		
-		// Save the colors as settings
-		SettingsService.getInstance().update("ideogram.gains.color", 
-				dialog.getGainColor());
-	
-		SettingsService.getInstance().update("ideogram.losses.color", 
-				dialog.getLossColor());
-
-		String genome = dialog.getGenome();
-		
-		loadGenomeData(genome);
-
-		Map<Chromosome, Integer> sampleYGain = 
-				new HashMap<Chromosome, Integer>();
+public class IdeogramModule extends CalcModule implements ModernClickListener {
+
+  public static final File RES_DIR = new File("res/modules/ideogram/genomes");
+
+  private static final String NAME = "Ideogram";
+
+  /**
+   * The member button from human.
+   */
+  private RibbonLargeButton mButtonIdeogram = new RibbonLargeButton("Ideogram",
+      UIService.getInstance().loadIcon(IdeogramIcon.class, 24));
+
+  /**
+   * The member window.
+   */
+  private MainMatCalcWindow mWindow;
+
+  private Graph2dWindow mGraphWindow;
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.abh.lib.NameProperty#getName()
+   */
+  @Override
+  public String getName() {
+    return NAME;
+  }
 
-		Map<Chromosome, Integer> sampleYLoss = 
-				new HashMap<Chromosome, Integer>();
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.apps.matcalc.modules.Module#run(java.lang.String[])
+   */
+  @Override
+  public void run(String... args) {
+    // Do nothing
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see edu.columbia.rdf.apps.matcalc.modules.Module#init(edu.columbia.rdf.apps.
+   * matcalc.MainMatCalcWindow)
+   */
+  @Override
+  public void init(MainMatCalcWindow window) {
+    mWindow = window;
 
-		Map<Chromosome, Map<String, Integer>> yMapGain = 
-				new HashMap<Chromosome, Map<String, Integer>>();
+    // home
+    mButtonIdeogram.setToolTip(new ModernToolTip(NAME, "Generate ideogram for losses and gains."),
+        mWindow.getRibbon().getToolTipModel());
+    mWindow.getRibbon().getHomeToolbar().getSection("Tools").add(mButtonIdeogram);
 
-		Map<Chromosome, Integer> rowCountGain = 
-				new HashMap<Chromosome, Integer>();
+    mButtonIdeogram.addClickListener(this);
+  }
 
-		Map<Chromosome, Map<String, Integer>> yMapLoss = 
-				new HashMap<Chromosome, Map<String, Integer>>();
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.abh.lib.ui.modern.event.ModernClickListener#clicked(org.abh.lib.ui.modern
+   * .event.ModernClickEvent)
+   */
+  @Override
+  public final void clicked(ModernClickEvent e) {
+    try {
+      ideogram();
+    } catch (IOException e1) {
+      e1.printStackTrace();
+    }
+  }
 
-		Map<Chromosome, Integer> rowCountLoss = 
-				new HashMap<Chromosome, Integer>();
+  private void ideogram() throws IOException {
+    DataFrame m = mWindow.getCurrentMatrix();
 
+    if (m == null) {
+      showLoadMatrixError(mWindow);
 
-		for (Chromosome chr : Human.CHROMOSOMES) {
-			sampleYGain.put(chr, 1);
-			sampleYLoss.put(chr, 1);
-		}
-		
-		
+      return;
+    }
 
-		for (int i = 0; i < m.getRows(); ++i) {
-			Chromosome chr = ChromosomeService
-					.getInstance()
-					.parse(m.getText(i, idColumns.get("chr")));
+    Map<String, Integer> idColumns = findColumns(mWindow, m, "id", "chr", "start", "end", "mean");
 
-			double mean = m.getValue(i, idColumns.get("mean"));
+    if (idColumns == null) {
+      return;
+    }
 
-			if (mean >= 0) {
-				if (!rowCountGain.containsKey(chr)) {
-					rowCountGain.put(chr, 0);
-				}
+    IdeogramDialog dialog = new IdeogramDialog(mWindow,
+        SettingsService.getInstance().getAsColor("ideogram.gains.color"),
+        SettingsService.getInstance().getAsColor("ideogram.losses.color"));
 
-				rowCountGain.put(chr, rowCountGain.get(chr) + 1);
-			} else {
-				if (!rowCountLoss.containsKey(chr)) {
-					rowCountLoss.put(chr, 0);
-				}
+    dialog.setVisible(true);
 
-				rowCountLoss.put(chr, rowCountLoss.get(chr) + 1);
-			}
-		}
+    if (dialog.getStatus() == ModernDialogStatus.CANCEL) {
+      return;
+    }
 
+    // Save the colors as settings
+    SettingsService.getInstance().update("ideogram.gains.color", dialog.getGainColor());
 
-		// create some ms
+    SettingsService.getInstance().update("ideogram.losses.color", dialog.getLossColor());
 
-		Map<Chromosome, DataFrame> matrixMapGain = 
-				new HashMap<Chromosome, DataFrame>();
-
-		for (Chromosome chr : Human.CHROMOSOMES) {
-			if (rowCountGain.containsKey(chr)) {
-				// The matrix must hold all gains.
-				DataFrame matrix = 
-						DataFrame.createNumericalMatrix(rowCountGain.get(chr), 4);
-
-				matrix.setColumnName(0, "Gains x1");
-				matrix.setColumnName(1, "Gains y1");
-				matrix.setColumnName(2, "Gains x2");
-				matrix.setColumnName(3, "Gains y2");
+    String genome = dialog.getGenome();
 
-				matrixMapGain.put(chr, matrix);
-			}
-		}
+    loadGenomeData(genome);
 
-		Map<Chromosome, DataFrame> matrixMapLoss = 
-				new HashMap<Chromosome, DataFrame>();
+    Map<Chromosome, Integer> sampleYGain = new HashMap<Chromosome, Integer>();
 
-		for (Chromosome chr : Human.CHROMOSOMES) {
-			if (rowCountLoss.containsKey(chr)) {
-				DataFrame matrix = 
-						DataFrame.createNumericalMatrix(rowCountLoss.get(chr), 4);
+    Map<Chromosome, Integer> sampleYLoss = new HashMap<Chromosome, Integer>();
 
-				matrix.setColumnName(0, "Losses x1");
-				matrix.setColumnName(1, "Losses y1");
-				matrix.setColumnName(2, "Losses x2");
-				matrix.setColumnName(3, "Losses y2");
-
-				matrixMapLoss.put(chr, matrix);
-			}
-		}
-
-		// Reset the counters
+    Map<Chromosome, Map<String, Integer>> yMapGain = new HashMap<Chromosome, Map<String, Integer>>();
 
-		for (Chromosome chr : rowCountGain.keySet()) {
-			rowCountGain.put(chr, 0);
-		}
+    Map<Chromosome, Integer> rowCountGain = new HashMap<Chromosome, Integer>();
 
-		for (Chromosome chr : rowCountLoss.keySet()) {
-			rowCountLoss.put(chr, 0);
-		}
+    Map<Chromosome, Map<String, Integer>> yMapLoss = new HashMap<Chromosome, Map<String, Integer>>();
 
-		// sort by length
+    Map<Chromosome, Integer> rowCountLoss = new HashMap<Chromosome, Integer>();
 
-		Map<Chromosome, Map<Integer, List<Integer>>> orderMapGain = 
-				new TreeMap<Chromosome, Map<Integer, List<Integer>>>();
+    for (Chromosome chr : Human.CHROMOSOMES) {
+      sampleYGain.put(chr, 1);
+      sampleYLoss.put(chr, 1);
+    }
 
-		Map<Chromosome, Map<Integer, List<Integer>>> orderMapLoss = 
-				new TreeMap<Chromosome, Map<Integer, List<Integer>>>();
+    for (int i = 0; i < m.getRows(); ++i) {
+      Chromosome chr = ChromosomeService.getInstance().parse(m.getText(i, idColumns.get("chr")));
 
-		for (int i = 0; i < m.getRows(); ++i) {
-			Chromosome chr = ChromosomeService
-					.getInstance()
-					.parse(m.getText(i, idColumns.get("chr")));
-			int start = (int)m.getValue(i, idColumns.get("start"));
-			int end = (int)m.getValue(i, idColumns.get("end"));
-			double mean = m.getValue(i, idColumns.get("mean"));
-			int l = end - start + 1;
-
-			if (mean >= 0) {
-				if (!orderMapGain.containsKey(chr)) {
-					orderMapGain.put(chr, new TreeMap<Integer, List<Integer>>());
-				}
-
-				if (!orderMapGain.get(chr).containsKey(l)) {
-					orderMapGain.get(chr).put(l, new ArrayList<Integer>());
-				}
-
-				orderMapGain.get(chr).get(l).add(i);
-			} else {
-				if (!orderMapLoss.containsKey(chr)) {
-					orderMapLoss.put(chr, new TreeMap<Integer, List<Integer>>());
-				}
-
-				if (!orderMapLoss.get(chr).containsKey(l)) {
-					orderMapLoss.get(chr).put(l, new ArrayList<Integer>());
-				}
-
-				orderMapLoss.get(chr).get(l).add(i);
-			}
-		}
-
-		for (Chromosome chr : orderMapGain.keySet()) {
-			// order largest to smallest
-			List<Integer> lorder = CollectionUtils.reverse(CollectionUtils.sort(orderMapGain.get(chr).keySet()));
-
-			for (int l : lorder) {
-				for (int i : orderMapGain.get(chr).get(l)) {
-					String id = m.getText(i, idColumns.get("id"));
-					int start = (int)m.getValue(i, idColumns.get("start"));
-					int end = (int)m.getValue(i, idColumns.get("end"));
-
-					if (!yMapGain.containsKey(chr)) {
-						yMapGain.put(chr, new HashMap<String, Integer>());
-					}
-
-					if (!yMapGain.get(chr).containsKey(id)) {
-						//allocate the next available row to a sample
-						yMapGain.get(chr).put(id, sampleYGain.get(chr));
-
-						// Set the next available row one higher
-						sampleYGain.put(chr, sampleYGain.get(chr) + 1);
-					}
-					
-					int y = yMapGain.get(chr).get(id);
-
-					int r = rowCountGain.get(chr);
-
-					matrixMapGain.get(chr).set(r, 0, start);
-					matrixMapGain.get(chr).set(r, 1, y);
-					matrixMapGain.get(chr).set(r, 2, end);
-					matrixMapGain.get(chr).set(r, 3, y);
-
-					rowCountGain.put(chr, rowCountGain.get(chr) + 1);
-
-				}
-			}
-		}
-
-		for (Chromosome chr : orderMapLoss.keySet()) {
-			List<Integer> lorder = CollectionUtils.reverse(CollectionUtils.sort(orderMapLoss.get(chr).keySet()));
-
-			for (int len : lorder) {
-				for (int i : orderMapLoss.get(chr).get(len)) {
-					String id = m.getText(i, idColumns.get("id"));
-					int start = (int)m.getValue(i, idColumns.get("start"));
-					int end = (int)m.getValue(i, idColumns.get("end"));
-
-					if (!yMapLoss.containsKey(chr)) {
-						yMapLoss.put(chr, new HashMap<String, Integer>());
-					}
-
-					if (!yMapLoss.get(chr).containsKey(id)) {
-						yMapLoss.get(chr).put(id, sampleYLoss.get(chr));
-
-						sampleYLoss.put(chr, sampleYLoss.get(chr) + 1);
-					}
-					
-					int y = -yMapLoss.get(chr).get(id);
-
-					int r = rowCountLoss.get(chr);
-
-					matrixMapLoss.get(chr).set(r, 0, start);
-					matrixMapLoss.get(chr).set(r, 1, y);
-					matrixMapLoss.get(chr).set(r, 2, end);
-					matrixMapLoss.get(chr).set(r, 3, y);
-
-					rowCountLoss.put(chr, rowCountLoss.get(chr) + 1);
-				}
-			}
-		}
-
-		
-		Figure figure = new CytobandsFigure(CytobandsService.getInstance().getCytobands(genome),
-				ChromosomeSizesService.getInstance().getSizes(genome),
-				dialog.getGainColor(),
-				matrixMapGain,
-				dialog.getLossColor(),
-				matrixMapLoss);
-
-		mGraphWindow = new Graph2dWindow(mWindow, figure, false).removeFormatPane();
-		mGraphWindow.setVisible(true);
-	}
-
-	private static void loadGenomeData(String genome) throws IOException {
-		File dir = new File(RES_DIR, genome);
-		
-		CytobandsService.getInstance().load(genome, 
-				Resources.getGzipReader(new File(dir, "ucsc_cytobands_" + genome + ".txt.gz")));
-		
-		ChromosomeSizesService.getInstance().load(genome, 
-				Resources.getGzipReader(new File(dir, "ucsc_chromosome_sizes_" + genome + ".txt.gz")));
-	}
+      double mean = m.getValue(i, idColumns.get("mean"));
+
+      if (mean >= 0) {
+        if (!rowCountGain.containsKey(chr)) {
+          rowCountGain.put(chr, 0);
+        }
+
+        rowCountGain.put(chr, rowCountGain.get(chr) + 1);
+      } else {
+        if (!rowCountLoss.containsKey(chr)) {
+          rowCountLoss.put(chr, 0);
+        }
+
+        rowCountLoss.put(chr, rowCountLoss.get(chr) + 1);
+      }
+    }
+
+    // create some ms
+
+    Map<Chromosome, DataFrame> matrixMapGain = new HashMap<Chromosome, DataFrame>();
+
+    for (Chromosome chr : Human.CHROMOSOMES) {
+      if (rowCountGain.containsKey(chr)) {
+        // The matrix must hold all gains.
+        DataFrame matrix = DataFrame.createNumericalMatrix(rowCountGain.get(chr), 4);
+
+        matrix.setColumnName(0, "Gains x1");
+        matrix.setColumnName(1, "Gains y1");
+        matrix.setColumnName(2, "Gains x2");
+        matrix.setColumnName(3, "Gains y2");
+
+        matrixMapGain.put(chr, matrix);
+      }
+    }
+
+    Map<Chromosome, DataFrame> matrixMapLoss = new HashMap<Chromosome, DataFrame>();
+
+    for (Chromosome chr : Human.CHROMOSOMES) {
+      if (rowCountLoss.containsKey(chr)) {
+        DataFrame matrix = DataFrame.createNumericalMatrix(rowCountLoss.get(chr), 4);
+
+        matrix.setColumnName(0, "Losses x1");
+        matrix.setColumnName(1, "Losses y1");
+        matrix.setColumnName(2, "Losses x2");
+        matrix.setColumnName(3, "Losses y2");
+
+        matrixMapLoss.put(chr, matrix);
+      }
+    }
+
+    // Reset the counters
+
+    for (Chromosome chr : rowCountGain.keySet()) {
+      rowCountGain.put(chr, 0);
+    }
+
+    for (Chromosome chr : rowCountLoss.keySet()) {
+      rowCountLoss.put(chr, 0);
+    }
+
+    // sort by length
+
+    Map<Chromosome, Map<Integer, List<Integer>>> orderMapGain = new TreeMap<Chromosome, Map<Integer, List<Integer>>>();
+
+    Map<Chromosome, Map<Integer, List<Integer>>> orderMapLoss = new TreeMap<Chromosome, Map<Integer, List<Integer>>>();
+
+    for (int i = 0; i < m.getRows(); ++i) {
+      Chromosome chr = ChromosomeService.getInstance().parse(m.getText(i, idColumns.get("chr")));
+      int start = (int) m.getValue(i, idColumns.get("start"));
+      int end = (int) m.getValue(i, idColumns.get("end"));
+      double mean = m.getValue(i, idColumns.get("mean"));
+      int l = end - start + 1;
+
+      if (mean >= 0) {
+        if (!orderMapGain.containsKey(chr)) {
+          orderMapGain.put(chr, new TreeMap<Integer, List<Integer>>());
+        }
+
+        if (!orderMapGain.get(chr).containsKey(l)) {
+          orderMapGain.get(chr).put(l, new ArrayList<Integer>());
+        }
+
+        orderMapGain.get(chr).get(l).add(i);
+      } else {
+        if (!orderMapLoss.containsKey(chr)) {
+          orderMapLoss.put(chr, new TreeMap<Integer, List<Integer>>());
+        }
+
+        if (!orderMapLoss.get(chr).containsKey(l)) {
+          orderMapLoss.get(chr).put(l, new ArrayList<Integer>());
+        }
+
+        orderMapLoss.get(chr).get(l).add(i);
+      }
+    }
+
+    for (Chromosome chr : orderMapGain.keySet()) {
+      // order largest to smallest
+      List<Integer> lorder = CollectionUtils.reverse(CollectionUtils.sort(orderMapGain.get(chr).keySet()));
+
+      for (int l : lorder) {
+        for (int i : orderMapGain.get(chr).get(l)) {
+          String id = m.getText(i, idColumns.get("id"));
+          int start = (int) m.getValue(i, idColumns.get("start"));
+          int end = (int) m.getValue(i, idColumns.get("end"));
+
+          if (!yMapGain.containsKey(chr)) {
+            yMapGain.put(chr, new HashMap<String, Integer>());
+          }
+
+          if (!yMapGain.get(chr).containsKey(id)) {
+            // allocate the next available row to a sample
+            yMapGain.get(chr).put(id, sampleYGain.get(chr));
+
+            // Set the next available row one higher
+            sampleYGain.put(chr, sampleYGain.get(chr) + 1);
+          }
+
+          int y = yMapGain.get(chr).get(id);
+
+          int r = rowCountGain.get(chr);
+
+          matrixMapGain.get(chr).set(r, 0, start);
+          matrixMapGain.get(chr).set(r, 1, y);
+          matrixMapGain.get(chr).set(r, 2, end);
+          matrixMapGain.get(chr).set(r, 3, y);
+
+          rowCountGain.put(chr, rowCountGain.get(chr) + 1);
+
+        }
+      }
+    }
+
+    for (Chromosome chr : orderMapLoss.keySet()) {
+      List<Integer> lorder = CollectionUtils.reverse(CollectionUtils.sort(orderMapLoss.get(chr).keySet()));
+
+      for (int len : lorder) {
+        for (int i : orderMapLoss.get(chr).get(len)) {
+          String id = m.getText(i, idColumns.get("id"));
+          int start = (int) m.getValue(i, idColumns.get("start"));
+          int end = (int) m.getValue(i, idColumns.get("end"));
+
+          if (!yMapLoss.containsKey(chr)) {
+            yMapLoss.put(chr, new HashMap<String, Integer>());
+          }
+
+          if (!yMapLoss.get(chr).containsKey(id)) {
+            yMapLoss.get(chr).put(id, sampleYLoss.get(chr));
+
+            sampleYLoss.put(chr, sampleYLoss.get(chr) + 1);
+          }
+
+          int y = -yMapLoss.get(chr).get(id);
+
+          int r = rowCountLoss.get(chr);
+
+          matrixMapLoss.get(chr).set(r, 0, start);
+          matrixMapLoss.get(chr).set(r, 1, y);
+          matrixMapLoss.get(chr).set(r, 2, end);
+          matrixMapLoss.get(chr).set(r, 3, y);
+
+          rowCountLoss.put(chr, rowCountLoss.get(chr) + 1);
+        }
+      }
+    }
+
+    Figure figure = new CytobandsFigure(CytobandsService.getInstance().getCytobands(genome),
+        ChromosomeSizesService.getInstance().getSizes(genome), dialog.getGainColor(), matrixMapGain,
+        dialog.getLossColor(), matrixMapLoss);
+
+    mGraphWindow = new Graph2dWindow(mWindow, figure, false).removeFormatPane();
+    mGraphWindow.setVisible(true);
+  }
+
+  private static void loadGenomeData(String genome) throws IOException {
+    File dir = new File(RES_DIR, genome);
+
+    CytobandsService.getInstance().load(genome,
+        Resources.getGzipReader(new File(dir, "ucsc_cytobands_" + genome + ".txt.gz")));
+
+    ChromosomeSizesService.getInstance().load(genome,
+        Resources.getGzipReader(new File(dir, "ucsc_chromosome_sizes_" + genome + ".txt.gz")));
+  }
 }

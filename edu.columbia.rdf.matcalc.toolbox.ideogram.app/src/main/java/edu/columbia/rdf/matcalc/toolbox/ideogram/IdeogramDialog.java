@@ -53,7 +53,8 @@ import org.jebtk.modern.window.WindowWidgetFocusEvents;
  *
  * @author Antony Holmes Holmes
  */
-public class IdeogramDialog extends ModernDialogHelpWindow implements ModernClickListener {
+public class IdeogramDialog extends ModernDialogHelpWindow
+    implements ModernClickListener {
 
   /**
    * The constant serialVersionUID.
@@ -69,10 +70,8 @@ public class IdeogramDialog extends ModernDialogHelpWindow implements ModernClic
   /**
    * Instantiates a new row annotation dialog.
    *
-   * @param parent
-   *          the parent
-   * @param rowAnnotations
-   *          the row annotations
+   * @param parent the parent
+   * @param rowAnnotations the row annotations
    */
   public IdeogramDialog(ModernWindow parent, Color gainColor, Color lossColor) {
     super(parent, "ideogram.help.url");

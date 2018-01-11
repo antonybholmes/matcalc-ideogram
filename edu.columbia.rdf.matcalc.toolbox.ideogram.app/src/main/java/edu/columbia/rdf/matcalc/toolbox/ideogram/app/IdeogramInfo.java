@@ -7,9 +7,11 @@ import org.jebtk.modern.help.GuiAppInfo;
 public class IdeogramInfo extends GuiAppInfo {
 
   public IdeogramInfo() {
-    super("Ideogram", new AppVersion(2), "Copyright (C) 2016-${year} Antony Holmes",
+    super("Ideogram", new AppVersion(2),
+        "Copyright (C) 2016-${year} Antony Holmes",
         UIService.getInstance().loadIcon(IdeogramIcon.class, 32),
-        UIService.getInstance().loadIcon(IdeogramIcon.class, 128), "Create Ideograms.");
+        UIService.getInstance().loadIcon(IdeogramIcon.class, 128),
+        "Create Ideograms.");
   }
 
 }

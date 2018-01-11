@@ -107,7 +107,8 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
   /*
    * (non-Javadoc)
    * 
-   * @see edu.columbia.rdf.apps.matcalc.modules.Module#init(edu.columbia.rdf.apps.
+   * @see
+   * edu.columbia.rdf.apps.matcalc.modules.Module#init(edu.columbia.rdf.apps.
    * matcalc.MainMatCalcWindow)
    */
   @Override
@@ -115,9 +116,11 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     mWindow = window;
 
     // home
-    mButtonIdeogram.setToolTip(new ModernToolTip(NAME, "Generate ideogram for losses and gains."),
+    mButtonIdeogram.setToolTip(
+        new ModernToolTip(NAME, "Generate ideogram for losses and gains."),
         mWindow.getRibbon().getToolTipModel());
-    mWindow.getRibbon().getHomeToolbar().getSection("Tools").add(mButtonIdeogram);
+    mWindow.getRibbon().getHomeToolbar().getSection("Tools")
+        .add(mButtonIdeogram);
 
     mButtonIdeogram.addClickListener(this);
   }
@@ -126,8 +129,8 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
    * (non-Javadoc)
    * 
    * @see
-   * org.abh.lib.ui.modern.event.ModernClickListener#clicked(org.abh.lib.ui.modern
-   * .event.ModernClickEvent)
+   * org.abh.lib.ui.modern.event.ModernClickListener#clicked(org.abh.lib.ui.
+   * modern .event.ModernClickEvent)
    */
   @Override
   public final void clicked(ModernClickEvent e) {
@@ -147,7 +150,13 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
       return;
     }
 
-    Map<String, Integer> idColumns = findColumns(mWindow, m, "id", "chr", "start", "end", "mean");
+    Map<String, Integer> idColumns = findColumns(mWindow,
+        m,
+        "id",
+        "chr",
+        "start",
+        "end",
+        "mean");
 
     if (idColumns == null) {
       return;
@@ -164,9 +173,11 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     }
 
     // Save the colors as settings
-    SettingsService.getInstance().update("ideogram.gains.color", dialog.getGainColor());
+    SettingsService.getInstance().update("ideogram.gains.color",
+        dialog.getGainColor());
 
-    SettingsService.getInstance().update("ideogram.losses.color", dialog.getLossColor());
+    SettingsService.getInstance().update("ideogram.losses.color",
+        dialog.getLossColor());
 
     String genome = dialog.getGenome();
 
@@ -190,7 +201,8 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     }
 
     for (int i = 0; i < m.getRows(); ++i) {
-      Chromosome chr = ChromosomeService.getInstance().parse(m.getText(i, idColumns.get("chr")));
+      Chromosome chr = ChromosomeService.getInstance()
+          .parse(m.getText(i, idColumns.get("chr")));
 
       double mean = m.getValue(i, idColumns.get("mean"));
 
@@ -216,7 +228,8 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     for (Chromosome chr : Human.CHROMOSOMES) {
       if (rowCountGain.containsKey(chr)) {
         // The matrix must hold all gains.
-        DataFrame matrix = DataFrame.createNumericalMatrix(rowCountGain.get(chr), 4);
+        DataFrame matrix = DataFrame
+            .createNumericalMatrix(rowCountGain.get(chr), 4);
 
         matrix.setColumnName(0, "Gains x1");
         matrix.setColumnName(1, "Gains y1");
@@ -231,7 +244,8 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
 
     for (Chromosome chr : Human.CHROMOSOMES) {
       if (rowCountLoss.containsKey(chr)) {
-        DataFrame matrix = DataFrame.createNumericalMatrix(rowCountLoss.get(chr), 4);
+        DataFrame matrix = DataFrame
+            .createNumericalMatrix(rowCountLoss.get(chr), 4);
 
         matrix.setColumnName(0, "Losses x1");
         matrix.setColumnName(1, "Losses y1");
@@ -259,7 +273,8 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     Map<Chromosome, Map<Integer, List<Integer>>> orderMapLoss = new TreeMap<Chromosome, Map<Integer, List<Integer>>>();
 
     for (int i = 0; i < m.getRows(); ++i) {
-      Chromosome chr = ChromosomeService.getInstance().parse(m.getText(i, idColumns.get("chr")));
+      Chromosome chr = ChromosomeService.getInstance()
+          .parse(m.getText(i, idColumns.get("chr")));
       int start = (int) m.getValue(i, idColumns.get("start"));
       int end = (int) m.getValue(i, idColumns.get("end"));
       double mean = m.getValue(i, idColumns.get("mean"));
@@ -290,7 +305,8 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
 
     for (Chromosome chr : orderMapGain.keySet()) {
       // order largest to smallest
-      List<Integer> lorder = CollectionUtils.reverse(CollectionUtils.sort(orderMapGain.get(chr).keySet()));
+      List<Integer> lorder = CollectionUtils
+          .reverse(CollectionUtils.sort(orderMapGain.get(chr).keySet()));
 
       for (int l : lorder) {
         for (int i : orderMapGain.get(chr).get(l)) {
@@ -326,7 +342,8 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     }
 
     for (Chromosome chr : orderMapLoss.keySet()) {
-      List<Integer> lorder = CollectionUtils.reverse(CollectionUtils.sort(orderMapLoss.get(chr).keySet()));
+      List<Integer> lorder = CollectionUtils
+          .reverse(CollectionUtils.sort(orderMapLoss.get(chr).keySet()));
 
       for (int len : lorder) {
         for (int i : orderMapLoss.get(chr).get(len)) {
@@ -358,9 +375,11 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
       }
     }
 
-    Figure figure = new CytobandsFigure(CytobandsService.getInstance().getCytobands(genome),
-        ChromosomeSizesService.getInstance().getSizes(genome), dialog.getGainColor(), matrixMapGain,
-        dialog.getLossColor(), matrixMapLoss);
+    Figure figure = new CytobandsFigure(
+        CytobandsService.getInstance().getCytobands(genome),
+        ChromosomeSizesService.getInstance().getSizes(genome),
+        dialog.getGainColor(), matrixMapGain, dialog.getLossColor(),
+        matrixMapLoss);
 
     mGraphWindow = new Graph2dWindow(mWindow, figure, false).removeFormatPane();
     mGraphWindow.setVisible(true);
@@ -370,9 +389,11 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     File dir = new File(RES_DIR, genome);
 
     CytobandsService.getInstance().load(genome,
-        Resources.getGzipReader(new File(dir, "ucsc_cytobands_" + genome + ".txt.gz")));
+        Resources.getGzipReader(
+            new File(dir, "ucsc_cytobands_" + genome + ".txt.gz")));
 
     ChromosomeSizesService.getInstance().load(genome,
-        Resources.getGzipReader(new File(dir, "ucsc_chromosome_sizes_" + genome + ".txt.gz")));
+        Resources.getGzipReader(
+            new File(dir, "ucsc_chromosome_sizes_" + genome + ".txt.gz")));
   }
 }

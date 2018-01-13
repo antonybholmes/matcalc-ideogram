@@ -100,7 +100,7 @@ public class IdeogramDialog extends ModernDialogHelpWindow
    * Creates the ui.
    */
   private final void createUi(Color gainColor, Color lossColor) {
-    // this.getContentPane().add(new JLabel("Change " +
+    // this.getWindowContentPanel().add(new JLabel("Change " +
     // getProductDetails().getProductName() + " settings", JLabel.LEFT),
     // BorderLayout.PAGE_START);
 

@@ -117,8 +117,7 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
 
     // home
     mButtonIdeogram.setToolTip(
-        new ModernToolTip(NAME, "Generate ideogram for losses and gains."),
-        mWindow.getRibbon().getToolTipModel());
+        new ModernToolTip(NAME, "Generate ideogram for losses and gains."));
     mWindow.getRibbon().getHomeToolbar().getSection("Tools")
         .add(mButtonIdeogram);
 

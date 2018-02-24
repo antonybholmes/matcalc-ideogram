@@ -11,7 +11,7 @@ import org.jebtk.modern.theme.ThemeService;
 import org.xml.sax.SAXException;
 
 import edu.columbia.rdf.matcalc.MainMatCalc;
-import edu.columbia.rdf.matcalc.ModuleLoader;
+import edu.columbia.rdf.matcalc.BasicModuleLoader;
 import edu.columbia.rdf.matcalc.bio.BioModuleLoader;
 import edu.columbia.rdf.matcalc.toolbox.ideogram.IdeogramModule;
 
@@ -27,7 +27,7 @@ public class MainIdeogram {
 
     ThemeService.getInstance().setTheme();
 
-    ModuleLoader ml = new BioModuleLoader().addModule(IdeogramModule.class);
+    BasicModuleLoader ml = new BioModuleLoader().addModule(IdeogramModule.class);
 
     MainMatCalc.main(new IdeogramInfo(), ml);
   }

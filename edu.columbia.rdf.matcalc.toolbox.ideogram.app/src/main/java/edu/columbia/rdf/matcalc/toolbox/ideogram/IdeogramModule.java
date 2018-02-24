@@ -38,7 +38,6 @@ import java.util.TreeMap;
 import org.jebtk.bioinformatics.ext.ucsc.CytobandsService;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
-import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.Human;
 import org.jebtk.core.Resources;
 import org.jebtk.core.collections.CollectionUtils;
@@ -92,16 +91,6 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
   @Override
   public String getName() {
     return NAME;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see edu.columbia.rdf.apps.matcalc.modules.Module#run(java.lang.String[])
-   */
-  @Override
-  public void run(String... args) {
-    // Do nothing
   }
 
   /*
@@ -201,7 +190,7 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
 
     for (int i = 0; i < m.getRows(); ++i) {
       Chromosome chr = GenomeService.getInstance()
-          .parseJson(m.getText(i, idColumns.get("chr")));
+          .chr(genome, m.getText(i, idColumns.get("chr")));
 
       double mean = m.getValue(i, idColumns.get("mean"));
 
@@ -273,7 +262,7 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
 
     for (int i = 0; i < m.getRows(); ++i) {
       Chromosome chr = GenomeService.getInstance()
-          .parseJson(m.getText(i, idColumns.get("chr")));
+          .chr(genome, m.getText(i, idColumns.get("chr")));
       int start = (int) m.getValue(i, idColumns.get("start"));
       int end = (int) m.getValue(i, idColumns.get("end"));
       double mean = m.getValue(i, idColumns.get("mean"));
@@ -374,9 +363,8 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
       }
     }
 
-    Figure figure = new CytobandsFigure(
+    Figure figure = new CytobandsFigure(genome,
         CytobandsService.getInstance().getCytobands(genome),
-        GenomeService.getInstance().getSizes(genome),
         dialog.getGainColor(), matrixMapGain, dialog.getLossColor(),
         matrixMapLoss);
 
@@ -390,9 +378,5 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     CytobandsService.getInstance().load(genome,
         Resources.getGzipReader(
             new File(dir, "ucsc_cytobands_" + genome + ".txt.gz")));
-
-    GenomeService.getInstance().load(genome,
-        Resources.getGzipReader(
-            new File(dir, "ucsc_chromosome_sizes_" + genome + ".txt.gz")));
   }
 }

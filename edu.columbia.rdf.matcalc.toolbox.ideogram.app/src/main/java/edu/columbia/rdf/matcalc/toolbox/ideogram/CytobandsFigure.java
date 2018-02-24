@@ -34,7 +34,7 @@ import java.util.Set;
 
 import org.jebtk.bioinformatics.ext.ucsc.Cytobands;
 import org.jebtk.bioinformatics.genomic.Chromosome;
-import org.jebtk.bioinformatics.genomic.ChromosomeSizes;
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.Human;
 import org.jebtk.bioinformatics.ui.external.ucsc.CytobandsLayer;
 import org.jebtk.core.settings.SettingsService;
@@ -83,15 +83,16 @@ public class CytobandsFigure extends Figure {
    *
    * @param view the new view
    */
-  public CytobandsFigure(final Cytobands cytobands,
-      final ChromosomeSizes chrSizes, final Color gainColor,
+  public CytobandsFigure(String genome,
+      final Cytobands cytobands,
+      final Color gainColor,
       final Map<Chromosome, DataFrame> matrixMapGain, final Color lossColor,
       final Map<Chromosome, DataFrame> matrixMapLoss) {
     super("Cytobands Figure", new PlotBoxGridLayout(36, 2));
 
     // lets see which genome is longest
 
-    int maxLength = chrSizes.getSize(Human.CHR1);
+    int maxLength = GenomeService.getInstance().chr(genome, "chr1").getSize();
     // Chromosome longestChr = Chromosome.CHR1;
 
     Chromosome chr;
@@ -101,7 +102,6 @@ public class CytobandsFigure extends Figure {
       chr = Human.CHROMOSOMES[i];
 
       createGainPlot(cytobands,
-          chrSizes,
           chr,
           maxLength,
           gainColor,
@@ -110,7 +110,6 @@ public class CytobandsFigure extends Figure {
       chr = Human.CHROMOSOMES[i + 12];
 
       createGainPlot(cytobands,
-          chrSizes,
           chr,
           maxLength,
           gainColor,
@@ -122,11 +121,11 @@ public class CytobandsFigure extends Figure {
 
       chr = Human.CHROMOSOMES[i];
 
-      createBands(cytobands, chrSizes, chr, maxLength);
+      createBands(cytobands, chr, maxLength);
 
       chr = Human.CHROMOSOMES[i + 12];
 
-      createBands(cytobands, chrSizes, chr, maxLength);
+      createBands(cytobands, chr, maxLength);
 
       //
       // Losses
@@ -135,7 +134,6 @@ public class CytobandsFigure extends Figure {
       chr = Human.CHROMOSOMES[i];
 
       createLossPlot(cytobands,
-          chrSizes,
           chr,
           maxLength,
           lossColor,
@@ -144,7 +142,6 @@ public class CytobandsFigure extends Figure {
       chr = Human.CHROMOSOMES[i + 12];
 
       createLossPlot(cytobands,
-          chrSizes,
           chr,
           maxLength,
           lossColor,
@@ -153,7 +150,6 @@ public class CytobandsFigure extends Figure {
   }
 
   private void createGainPlot(final Cytobands cytobands,
-      final ChromosomeSizes chrSizes,
       final Chromosome chr,
       int maxLength,
       final Color gainColor,
@@ -163,7 +159,6 @@ public class CytobandsFigure extends Figure {
 
     axes = createPlot("Gains",
         cytobands,
-        chrSizes,
         chr,
         maxLength,
         matrixMap,
@@ -180,7 +175,6 @@ public class CytobandsFigure extends Figure {
   }
 
   private void createLossPlot(final Cytobands cytobands,
-      final ChromosomeSizes chrSizes,
       final Chromosome chr,
       int maxLength,
       final Color lossColor,
@@ -190,7 +184,6 @@ public class CytobandsFigure extends Figure {
 
     axes = createPlot("Losses",
         cytobands,
-        chrSizes,
         chr,
         maxLength,
         matrixMap,
@@ -209,14 +202,13 @@ public class CytobandsFigure extends Figure {
 
   private Axes createPlot(String name,
       Cytobands cytobands,
-      ChromosomeSizes chrSizes,
       Chromosome chr,
       int maxLength,
       Map<Chromosome, DataFrame> matrixMap,
       Color color,
       FigureVertAlignment alignment) {
 
-    int size = chrSizes.getSize(chr);
+    int size = chr.getSize();
 
     //
     // Gains
@@ -276,11 +268,10 @@ public class CytobandsFigure extends Figure {
   }
 
   private void createBands(Cytobands cytobands,
-      ChromosomeSizes chrSizes,
       Chromosome chr,
       int maxLength) {
 
-    int size = chrSizes.getSize(chr);
+    int size = chr.getSize();
 
     //
     // Cytobands
@@ -290,7 +281,7 @@ public class CytobandsFigure extends Figure {
 
     Axes axes = figure.newAxes();
 
-    CytobandsLayer layer = new CytobandsLayer(chr, cytobands);
+    CytobandsLayer layer = new CytobandsLayer(cytobands);
 
     axes.addChild(layer);
     axes.getX1Axis().setLimits(0, size);

@@ -92,7 +92,7 @@ public class CytobandsFigure extends Figure {
 
     // lets see which genome is longest
 
-    int maxLength = GenomeService.getInstance().chr(genome, "chr1").getSize();
+    int maxLength = GenomeService.instance().chr(genome, "chr1").getSize();
     // Chromosome longestChr = Chromosome.CHR1;
 
     Chromosome chr;

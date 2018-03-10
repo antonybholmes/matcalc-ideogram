@@ -189,7 +189,7 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     }
 
     for (int i = 0; i < m.getRows(); ++i) {
-      Chromosome chr = GenomeService.getInstance()
+      Chromosome chr = GenomeService.instance()
           .chr(genome, m.getText(i, idColumns.get("chr")));
 
       double mean = m.getValue(i, idColumns.get("mean"));
@@ -261,7 +261,7 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     Map<Chromosome, Map<Integer, List<Integer>>> orderMapLoss = new TreeMap<Chromosome, Map<Integer, List<Integer>>>();
 
     for (int i = 0; i < m.getRows(); ++i) {
-      Chromosome chr = GenomeService.getInstance()
+      Chromosome chr = GenomeService.instance()
           .chr(genome, m.getText(i, idColumns.get("chr")));
       int start = (int) m.getValue(i, idColumns.get("start"));
       int end = (int) m.getValue(i, idColumns.get("end"));

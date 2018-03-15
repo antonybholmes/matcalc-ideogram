@@ -148,7 +148,7 @@ public class IdeogramDialog extends ModernDialogHelpWindow
     mLossesButton = new ColorSwatchButton(getParentWindow(), lossColor);
     box.add(new HExpandBox("Losses", mLossesButton));
 
-    setDialogCardContent(box);
+    setCard(box);
   }
 
   public final String getGenome() {

@@ -44,7 +44,7 @@ import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.settings.SettingsService;
 import org.jebtk.graphplot.figure.Figure;
 import org.jebtk.math.matrix.DataFrame;
-import org.jebtk.modern.UIService;
+import org.jebtk.modern.AssetService;
 import org.jebtk.modern.dialog.ModernDialogStatus;
 import org.jebtk.modern.event.ModernClickEvent;
 import org.jebtk.modern.event.ModernClickListener;
@@ -74,7 +74,7 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
    * The member button from human.
    */
   private RibbonLargeButton mButtonIdeogram = new RibbonLargeButton("Ideogram",
-      UIService.getInstance().loadIcon(IdeogramIcon.class, 24));
+      AssetService.getInstance().loadIcon(IdeogramIcon.class, 24));
 
   /**
    * The member window.
@@ -151,8 +151,8 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     }
 
     IdeogramDialog dialog = new IdeogramDialog(mWindow,
-        SettingsService.getInstance().getAsColor("ideogram.gains.color"),
-        SettingsService.getInstance().getAsColor("ideogram.losses.color"));
+        SettingsService.getInstance().getColor("ideogram.gains.color"),
+        SettingsService.getInstance().getColor("ideogram.losses.color"));
 
     dialog.setVisible(true);
 
@@ -189,7 +189,7 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     }
 
     for (int i = 0; i < m.getRows(); ++i) {
-      Chromosome chr = GenomeService.instance()
+      Chromosome chr = GenomeService.getInstance()
           .chr(genome, m.getText(i, idColumns.get("chr")));
 
       double mean = m.getValue(i, idColumns.get("mean"));
@@ -261,7 +261,7 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     Map<Chromosome, Map<Integer, List<Integer>>> orderMapLoss = new TreeMap<Chromosome, Map<Integer, List<Integer>>>();
 
     for (int i = 0; i < m.getRows(); ++i) {
-      Chromosome chr = GenomeService.instance()
+      Chromosome chr = GenomeService.getInstance()
           .chr(genome, m.getText(i, idColumns.get("chr")));
       int start = (int) m.getValue(i, idColumns.get("start"));
       int end = (int) m.getValue(i, idColumns.get("end"));

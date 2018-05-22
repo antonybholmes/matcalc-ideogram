@@ -63,18 +63,18 @@ public class CytobandsFigure extends Figure {
   private static final long serialVersionUID = 1L;
 
   private static final double PLOT_WIDTH = SettingsService.getInstance()
-      .getAsInt("ideogram.plot-width");
+      .getInt("ideogram.plot-width");
 
   private static final int PLOT_ROW_HEIGHT = SettingsService.getInstance()
-      .getAsInt("ideogram.separation");
+      .getInt("ideogram.separation");
 
   private Axes axes;
 
   // private static final Color GAINS_COLOR =
-  // SettingsService.getInstance().getAsColor("ideogram.gains.color");
+  // SettingsService.getInstance().getColor("ideogram.gains.color");
 
   // private static final Color LOSSES_COLOR =
-  // SettingsService.getInstance().getAsColor("ideogram.losses.color");
+  // SettingsService.getInstance().getColor("ideogram.losses.color");
 
   private static final int OFFSET = 10;
 
@@ -92,7 +92,7 @@ public class CytobandsFigure extends Figure {
 
     // lets see which genome is longest
 
-    int maxLength = GenomeService.instance().chr(genome, "chr1").getSize();
+    int maxLength = GenomeService.getInstance().chr(genome, "chr1").getSize();
     // Chromosome longestChr = Chromosome.CHR1;
 
     Chromosome chr;

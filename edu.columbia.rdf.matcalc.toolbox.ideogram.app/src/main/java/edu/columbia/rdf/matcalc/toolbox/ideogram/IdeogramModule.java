@@ -37,6 +37,7 @@ import java.util.TreeMap;
 
 import org.jebtk.bioinformatics.ext.ucsc.CytobandsService;
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.Human;
 import org.jebtk.core.Resources;
@@ -167,7 +168,7 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     SettingsService.getInstance().update("ideogram.losses.color",
         dialog.getLossColor());
 
-    String genome = dialog.getGenome();
+    Genome genome = GenomeService.getInstance().guessGenome(dialog.getGenome());
 
     loadGenomeData(genome);
 
@@ -372,8 +373,8 @@ public class IdeogramModule extends CalcModule implements ModernClickListener {
     mGraphWindow.setVisible(true);
   }
 
-  private static void loadGenomeData(String genome) throws IOException {
-    File dir = new File(RES_DIR, genome);
+  private static void loadGenomeData(Genome genome) throws IOException {
+    File dir = new File(RES_DIR, genome.getAssembly());
 
     CytobandsService.getInstance().load(genome,
         Resources.getGzipReader(

@@ -34,6 +34,7 @@ import java.util.Set;
 
 import org.jebtk.bioinformatics.ext.ucsc.Cytobands;
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.Human;
 import org.jebtk.bioinformatics.ui.external.ucsc.CytobandsLayer;
@@ -83,7 +84,7 @@ public class CytobandsFigure extends Figure {
    *
    * @param view the new view
    */
-  public CytobandsFigure(String genome,
+  public CytobandsFigure(Genome genome,
       final Cytobands cytobands,
       final Color gainColor,
       final Map<Chromosome, DataFrame> matrixMapGain, final Color lossColor,

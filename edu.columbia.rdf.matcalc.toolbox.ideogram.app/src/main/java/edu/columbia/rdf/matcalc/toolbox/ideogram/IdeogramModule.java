@@ -54,7 +54,7 @@ import org.jebtk.modern.tooltip.ModernToolTip;
 
 import edu.columbia.rdf.matcalc.MainMatCalcWindow;
 import edu.columbia.rdf.matcalc.figure.graph2d.Graph2dWindow;
-import edu.columbia.rdf.matcalc.toolbox.CalcModule;
+import edu.columbia.rdf.matcalc.toolbox.Module;
 import edu.columbia.rdf.matcalc.toolbox.ideogram.app.IdeogramIcon;
 
 /**
@@ -65,7 +65,7 @@ import edu.columbia.rdf.matcalc.toolbox.ideogram.app.IdeogramIcon;
  * @author Antony Holmes Holmes
  *
  */
-public class IdeogramModule extends CalcModule implements ModernClickListener {
+public class IdeogramModule extends Module implements ModernClickListener {
 
   public static final File RES_DIR = new File("res/modules/ideogram/genomes");
 

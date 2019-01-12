@@ -53,7 +53,7 @@ import org.jebtk.math.matrix.DoubleMatrix;
 /**
  * Layout out peak plots in a column.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class CytobandsFigure extends Figure {

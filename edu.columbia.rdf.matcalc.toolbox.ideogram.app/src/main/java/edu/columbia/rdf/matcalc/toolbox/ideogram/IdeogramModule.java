@@ -62,7 +62,7 @@ import edu.columbia.rdf.matcalc.toolbox.ideogram.app.IdeogramIcon;
  * with the same merge id will be merged together. Coordinates and copy number
  * will be adjusted but genes, cytobands etc are not.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class IdeogramModule extends Module implements ModernClickListener {

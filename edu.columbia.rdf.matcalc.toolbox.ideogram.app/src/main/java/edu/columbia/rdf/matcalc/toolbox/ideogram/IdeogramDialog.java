@@ -51,7 +51,7 @@ import org.jebtk.modern.window.WindowWidgetFocusEvents;
 /**
  * User can select how many annotations there are.
  *
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  */
 public class IdeogramDialog extends ModernDialogHelpWindow
     implements ModernClickListener {

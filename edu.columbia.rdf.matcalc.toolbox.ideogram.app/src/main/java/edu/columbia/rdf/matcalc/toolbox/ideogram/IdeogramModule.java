@@ -38,7 +38,7 @@ import java.util.TreeMap;
 import org.jebtk.bioinformatics.ext.ucsc.CytobandsService;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.Genome;
-import org.jebtk.bioinformatics.genomic.GenomeService;
+import org.jebtk.bioinformatics.genomic.ChromosomeService;
 import org.jebtk.bioinformatics.genomic.Human;
 import org.jebtk.core.Resources;
 import org.jebtk.core.collections.CollectionUtils;
@@ -190,7 +190,7 @@ public class IdeogramModule extends Module implements ModernClickListener {
     }
 
     for (int i = 0; i < m.getRows(); ++i) {
-      Chromosome chr = GenomeService.getInstance()
+      Chromosome chr = ChromosomeService.getInstance()
           .chr(genome, m.getText(i, idColumns.get("chr")));
 
       double mean = m.getValue(i, idColumns.get("mean"));
@@ -262,7 +262,7 @@ public class IdeogramModule extends Module implements ModernClickListener {
     Map<Chromosome, Map<Integer, List<Integer>>> orderMapLoss = new TreeMap<Chromosome, Map<Integer, List<Integer>>>();
 
     for (int i = 0; i < m.getRows(); ++i) {
-      Chromosome chr = GenomeService.getInstance()
+      Chromosome chr = ChromosomeService.getInstance()
           .chr(genome, m.getText(i, idColumns.get("chr")));
       int start = (int) m.getValue(i, idColumns.get("start"));
       int end = (int) m.getValue(i, idColumns.get("end"));

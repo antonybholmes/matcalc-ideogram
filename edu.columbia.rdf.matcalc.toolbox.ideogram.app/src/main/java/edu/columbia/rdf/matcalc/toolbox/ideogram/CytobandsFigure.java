@@ -35,7 +35,7 @@ import java.util.Set;
 import org.jebtk.bioinformatics.ext.ucsc.Cytobands;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.Genome;
-import org.jebtk.bioinformatics.genomic.GenomeService;
+import org.jebtk.bioinformatics.genomic.ChromosomeService;
 import org.jebtk.bioinformatics.genomic.Human;
 import org.jebtk.bioinformatics.ui.external.ucsc.CytobandsLayer;
 import org.jebtk.core.settings.SettingsService;
@@ -93,7 +93,7 @@ public class CytobandsFigure extends Figure {
 
     // lets see which genome is longest
 
-    int maxLength = GenomeService.getInstance().chr(genome, "chr1").getSize();
+    int maxLength = ChromosomeService.getInstance().chr(genome, "chr1").getSize();
     // Chromosome longestChr = Chromosome.CHR1;
 
     Chromosome chr;

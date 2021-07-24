@@ -93,7 +93,7 @@ public class CytobandsFigure extends Figure {
 
     // lets see which genome is longest
 
-    int maxLength = ChromosomeService.getInstance().chr(genome, "chr1").getSize();
+    int maxLength = ChromosomeService.getInstance().size(genome, ChromosomeService.getInstance().chr(genome, "chr1"));
     // Chromosome longestChr = Chromosome.CHR1;
 
     Chromosome chr;
@@ -103,6 +103,7 @@ public class CytobandsFigure extends Figure {
       chr = Human.CHROMOSOMES[i];
 
       createGainPlot(cytobands,
+          genome,
           chr,
           maxLength,
           gainColor,
@@ -111,6 +112,7 @@ public class CytobandsFigure extends Figure {
       chr = Human.CHROMOSOMES[i + 12];
 
       createGainPlot(cytobands,
+          genome,
           chr,
           maxLength,
           gainColor,
@@ -122,11 +124,11 @@ public class CytobandsFigure extends Figure {
 
       chr = Human.CHROMOSOMES[i];
 
-      createBands(cytobands, chr, maxLength);
+      createBands(cytobands, genome, chr, maxLength);
 
       chr = Human.CHROMOSOMES[i + 12];
 
-      createBands(cytobands, chr, maxLength);
+      createBands(cytobands, genome, chr, maxLength);
 
       //
       // Losses
@@ -135,6 +137,7 @@ public class CytobandsFigure extends Figure {
       chr = Human.CHROMOSOMES[i];
 
       createLossPlot(cytobands,
+          genome,
           chr,
           maxLength,
           lossColor,
@@ -143,6 +146,7 @@ public class CytobandsFigure extends Figure {
       chr = Human.CHROMOSOMES[i + 12];
 
       createLossPlot(cytobands,
+          genome,
           chr,
           maxLength,
           lossColor,
@@ -151,6 +155,7 @@ public class CytobandsFigure extends Figure {
   }
 
   private void createGainPlot(final Cytobands cytobands,
+      final Genome genome,
       final Chromosome chr,
       int maxLength,
       final Color gainColor,
@@ -160,6 +165,7 @@ public class CytobandsFigure extends Figure {
 
     axes = createPlot("Gains",
         cytobands,
+        genome,
         chr,
         maxLength,
         matrixMap,
@@ -176,6 +182,7 @@ public class CytobandsFigure extends Figure {
   }
 
   private void createLossPlot(final Cytobands cytobands,
+      final Genome genome,
       final Chromosome chr,
       int maxLength,
       final Color lossColor,
@@ -185,6 +192,7 @@ public class CytobandsFigure extends Figure {
 
     axes = createPlot("Losses",
         cytobands,
+        genome,
         chr,
         maxLength,
         matrixMap,
@@ -203,13 +211,14 @@ public class CytobandsFigure extends Figure {
 
   private Axes createPlot(String name,
       Cytobands cytobands,
+      Genome genome,
       Chromosome chr,
       int maxLength,
       Map<Chromosome, DataFrame> matrixMap,
       Color color,
       FigureVertAlignment alignment) {
 
-    int size = chr.getSize();
+    int size = ChromosomeService.getInstance().size(genome, chr);
 
     //
     // Gains
@@ -269,10 +278,11 @@ public class CytobandsFigure extends Figure {
   }
 
   private void createBands(Cytobands cytobands,
+      Genome genome,
       Chromosome chr,
       int maxLength) {
 
-    int size = chr.getSize();
+    int size = ChromosomeService.getInstance().size(genome, chr);
 
     //
     // Cytobands
